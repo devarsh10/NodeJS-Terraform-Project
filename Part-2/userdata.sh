@@ -31,9 +31,9 @@ npm install done
 .
 ."
 
-cat <<EOT >> .env #overriding with existing .env
-AWS_ACCESS_KEY_ID=process.env.AWS_ACCESS_KEY_ID
-AWS_SECRET_ACCESS_KEY=process.env.AWS_SECRET_ACCESS_KEY
+cat <<EOT > .env #overriding with existing .env
+AWS_ACCESS_KEY_ID=AKIASZGKPSJI2HQUHK53
+AWS_SECRET_ACCESS_KEY=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
 AWS_REGION=us-east-1
 BUCKET_NAME=list-bucket-content
 PORT=3000
