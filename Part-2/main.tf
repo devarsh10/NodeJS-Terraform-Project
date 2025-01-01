@@ -1,25 +1,12 @@
-resource "aws_s3_bucket" "app_bucket" {
+provider "aws" {
+  region = var.aws_region
+}
+
+data "aws_s3_bucket" "app_bucket" {
   bucket = var.bucket_name
 }
 
-resource "aws_s3_bucket_policy" "app_bucket_policy" {
-  bucket = aws_s3_bucket.app_bucket.id
-  policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Effect    = "Allow"
-        Principal = "*"
-        Action    = "s3:GetObject"
-        Resource  = "${aws_s3_bucket.app_bucket.arn}/*"
-      }
-    ]
-  })
-}
-
-
 # IAM Role
-
 resource "aws_iam_role" "app_role" {
   name = "app-role"
 
@@ -47,7 +34,7 @@ resource "aws_iam_role_policy" "app_policy" {
       {
         Effect   = "Allow"
         Action   = "s3:*"
-        Resource = "${aws_s3_bucket.app_bucket.arn}/*"
+        Resource = "${data.aws_s3_bucket.app_bucket.arn}/*"
       }
     ]
   })
@@ -56,7 +43,7 @@ resource "aws_iam_role_policy" "app_policy" {
 
 # SG
 
-resource "aws_security_group" "existing_sg" {
+resource "aws_security_group" "app_sg" {
   name        = "app-sg"
   description = "Allow SSH and HTTP access"
   vpc_id      = var.vpc_id
@@ -77,6 +64,22 @@ resource "aws_security_group" "existing_sg" {
     cidr_blocks = var.allowed_ips
   }
 
+  ingress {
+    description = "Allow HTTP"
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
+    cidr_blocks = var.allowed_ips
+  }
+
+  ingress {
+    description = "Allow HTTP"
+    from_port   = 3000
+    to_port     = 3000
+    protocol    = "tcp"
+    cidr_blocks = var.allowed_ips
+  }
+
   egress {
     from_port   = 0
     to_port     = 0
@@ -91,9 +94,7 @@ resource "aws_instance" "app_instance" {
   ami           = "ami-005fc0f236362e99f"
   instance_type = var.instance_type
   key_name      = var.key_name
-  security_groups = [
-    aws_security_group.app_sg.name
-  ]
+  security_groups = [ aws_security_group.app_sg.name ]
 
   iam_instance_profile = aws_iam_instance_profile.app_profile.id
 
@@ -102,6 +103,10 @@ resource "aws_instance" "app_instance" {
   tags = {
     Name = "One2n-Assignment"
   }
+
 }
 
-
+resource "aws_iam_instance_profile" "app_profile" {
+  name = "app-profile"
+  role = aws_iam_role.app_role.name
+}

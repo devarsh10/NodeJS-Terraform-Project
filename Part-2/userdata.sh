@@ -1,21 +1,56 @@
+#!/bin/bash
 sudo apt update -y
 sudo apt install -y curl unzip git
 
-sudo apt install -y curl unzip git
-
-curl -fsSL https://deb.nodesource.com/setup_16.x | sudo -E bash -
+curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
 sudo apt install -y nodejs
 
-git clone https://github.com/devarsh10/node-s3-app.git /home/ubuntu/app
-cd /home/ubuntu/app
+echo -e ".
+.
+.
+.
+Installed nodejs
+.
+.
+.
+."
+
+sudo apt install net-tools -y
+
+git clone https://devarsh10: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@github.com/devarsh10/http-code.git /home/ubuntu/app
+cd /home/ubuntu/app/Part-1
 npm install
 
-cat <<EOT > .env
+echo -e ".
+.
+.
+.
+npm install done
+.
+.
+.
+."
+
+cat <<EOT >> .env #overriding with existing .env
 PORT=80
-AWS_ACCESS_KEY_ID=YOUR_ACCESS_KEY_ID
-AWS_SECRET_ACCESS_KEY=YOUR_SECRET_ACCESS_KEY
+AWS_ACCESS_KEY_ID=AKIASZGKPSJIWXEXIATM
+AWS_SECRET_ACCESS_KEY=ShF5AuQ4TuXUT39cfjCVqoK9+nfc6qWLElbun4Tq
 AWS_REGION=us-east-1
-BUCKET_NAME=YOUR_BUCKET_NAME
+BUCKET_NAME=list-bucket-content
 EOT
 
-node index.js &
+echo -e ".
+.
+.
+.
+created config file
+.
+.
+.
+."
+
+sudo mkdir -p /home/log-dir && cd /home/log-dir && touch log-file.log
+cd /home/ubuntu/app/Part-1
+node code.js > /home/log-dir/log-file.log 2>&1  &
+
+echo "Done"
