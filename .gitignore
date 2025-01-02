@@ -4,4 +4,4 @@ package-lock.json
 /Part-2/.terraform/
 /Part-2/terraform.tfstate.backup
 .env
-terraform.tfstate
+/Part-2/terraform.tfstate
