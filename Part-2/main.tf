@@ -24,6 +24,7 @@ resource "aws_iam_role" "app_role" {
   })
 }
 
+# IAM Role Policy - Updated to include Secrets Manager permissions
 resource "aws_iam_role_policy" "app_policy" {
   name = "app-policy"
   role = aws_iam_role.app_role.id
@@ -35,14 +36,17 @@ resource "aws_iam_role_policy" "app_policy" {
         Effect   = "Allow"
         Action   = "s3:*"
         Resource = "${data.aws_s3_bucket.app_bucket.arn}/*"
+      },
+      {
+        Effect   = "Allow"
+        Action   = "secretsmanager:GetSecretValue"
+        Resource = "arn:aws:secretsmanager:us-east-1:191550689873:secret:http-proj-secret-QXbLvZ"
       }
     ]
   })
 }
 
-
-# SG
-
+# Security Group (No changes here)
 resource "aws_security_group" "app_sg" {
   name        = "app-sg"
   description = "Allow SSH and HTTP access"
@@ -89,12 +93,11 @@ resource "aws_security_group" "app_sg" {
 }
 
 # EC2 Instance
-
 resource "aws_instance" "app_instance" {
   ami           = "ami-005fc0f236362e99f"
   instance_type = var.instance_type
   key_name      = var.key_name
-  security_groups = [ aws_security_group.app_sg.name ]
+  security_groups = [aws_security_group.app_sg.name]
 
   iam_instance_profile = aws_iam_instance_profile.app_profile.id
 
@@ -103,9 +106,9 @@ resource "aws_instance" "app_instance" {
   tags = {
     Name = "One2n-Assignment"
   }
-
 }
 
+# IAM Instance Profile
 resource "aws_iam_instance_profile" "app_profile" {
   name = "app-profile"
   role = aws_iam_role.app_role.name

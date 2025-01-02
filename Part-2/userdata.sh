@@ -17,7 +17,7 @@ Installed nodejs
 
 sudo apt install net-tools -y
 
-git clone https://devarsh10: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@github.com/devarsh10/http-code.git /home/ubuntu/app
+git clone https://github.com/devarsh10/http-code.git /home/ubuntu/app
 cd /home/ubuntu/app/Part-1
 npm install
 
@@ -26,14 +26,30 @@ echo -e ".
 .
 .
 npm install done
+Now installing jq
 .
 .
 .
 ."
 
+sudo apt install -y jq
+echo -e ".
+.
+.
+jq Installed
+.
+.
+."
+
+SECRET=$(aws secretsmanager get-secret-value --secret-id http-proj-secret --query SecretString --output text)
+
+# Parse out the individual credentials from the JSON
+AWS_ACCESS_KEY_ID=$(echo $SECRET | jq -r '.AWS_ACCESS_KEY_ID')
+AWS_SECRET_ACCESS_KEY=$(echo $SECRET | jq -r '.AWS_SECRET_ACCESS_KEY')
+
 cat <<EOT > .env #overriding with existing .env
-AWS_ACCESS_KEY_ID="AKIASZGKPSJIWXEXIATM"
-AWS_SECRET_ACCESS_KEY="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"
+AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID
+AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
 AWS_REGION=us-east-1
 BUCKET_NAME=list-bucket-content
 PORT=3000
