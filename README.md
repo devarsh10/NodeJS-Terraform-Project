@@ -19,6 +19,7 @@
 
    To run in detached mode run use flag -d.
 
+
 ### Part-02
 1. First use `terraform init` command to Initialise and download our resource we mentioned in main.tf file
 ![image](https://github.com/user-attachments/assets/656baebd-3113-4f83-843c-bf1ba3d942be)
@@ -35,6 +36,10 @@
 
 When we go to our http://publicIP:3000/list-bucket-content. We will be seeing 
 ![image](https://github.com/user-attachments/assets/90bf3114-7f98-4e5e-bea2-066e6de27689)
+
+5. Destroy the infrastructure we provisioned using command `terraform destroy --auto-approve`
+![image](https://github.com/user-attachments/assets/782f3370-ed1a-4fd7-8708-2d8e30d44af5)
+
 
 Assumptions:
 1. S3 Bucket Unblocking access for account and bucket(our bucket. Named "list-bucket-content)
@@ -53,6 +58,8 @@ Assumptions:
 ## Part - 2
 
 ### Assumptions
+- Create Dockerfile. So that we will not have to face the issue "It works on my machine."
+- Use AWS Secrets Manager to store the secrets and create required Role and attach a Policy to it. Follow least privilege best practice.
 - Create an EC2 Instance and deploy on it.
 - Use default VPC, and create a Security Group with required ports to expose.
 
